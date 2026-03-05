@@ -75,18 +75,100 @@
         </div>
     </div>
 
-    <!-- 3. 辞書：理不尽あるあるセレクト -->
-    <div id="dict-screen" class="screen bg-slate-900 p-6 rounded-3xl shadow-2xl w-full max-w-md border border-slate-700 h-[600px] overflow-y-auto">
-        <h2 class="text-green-400 pixel-font mb-4">OS_HACK_DICT V1.1</h2>
-        <div class="space-y-2 mb-6" id="dict-buttons">
-            <!-- JSで生成 -->
-        </div>
-        <div id="hint-box" class="hidden bg-slate-800 p-4 rounded-xl border border-green-500 mb-6">
-            <p class="text-[10px] text-slate-500 mb-2 uppercase">Recommended Command:</p>
-            <p id="hint-text" class="text-green-400 font-mono text-sm leading-relaxed"></p>
-        </div>
-        <button onclick="showScreen('main-screen')" class="w-full bg-slate-700 text-white py-3 rounded-xl font-bold">戻る</button>
+    <!-- 3. 辞書：カテゴリー & 状況セレクト -->
+<div id="dict-screen" class="screen bg-slate-900 p-6 rounded-3xl shadow-2xl w-full max-w-md border border-slate-700 h-[650px] flex flex-col">
+    <h2 class="text-green-400 pixel-font mb-4 flex items-center">
+        <span class="mr-2">📁</span> OS_HACK_DICT_V1.2
+    </h2>
+    
+    <!-- カテゴリー選択 -->
+    <div class="flex gap-2 mb-4 overflow-x-auto pb-2">
+        <button onclick="filterDict('all')" class="whitespace-nowrap px-3 py-1 bg-slate-700 text-white text-[10px] rounded-full">ALL</button>
+        <button onclick="filterDict('boss')" class="whitespace-nowrap px-3 py-1 bg-indigo-900 text-white text-[10px] rounded-full">上司の理不尽</button>
+        <button onclick="filterDict('culture')" class="whitespace-nowrap px-3 py-1 bg-rose-900 text-white text-[10px] rounded-full">謎の風習</button>
+        <button onclick="filterDict('mental')" class="whitespace-nowrap px-3 py-1 bg-emerald-900 text-white text-[10px] rounded-full">自衛/メンタル</button>
     </div>
+
+    <!-- 状況セレクト（スクロールエリア） -->
+    <div class="flex-1 overflow-y-auto space-y-2 mb-4 pr-1" id="dict-buttons">
+        <!-- JSでボタンを動的生成 -->
+    </div>
+
+    <!-- アンサー出力エリア（3パターン） -->
+    <div id="hint-box" class="hidden bg-slate-800 p-4 rounded-xl border border-green-500 overflow-y-auto max-h-[300px]">
+        <div class="flex justify-between items-center mb-3">
+            <span class="text-[10px] text-green-500 font-bold uppercase">Answer Patterns</span>
+            <button onclick="document.getElementById('hint-box').classList.add('hidden')" class="text-slate-500 text-xs">× 閉じる</button>
+        </div>
+        
+        <div class="space-y-4">
+            <div>
+                <p class="text-[9px] text-blue-400 font-bold mb-1">【A: 論理ハック】相手を黙らせる</p>
+                <p id="ans-logic" class="text-xs text-slate-200 font-mono leading-relaxed bg-slate-900 p-2 rounded"></p>
+            </div>
+            <div>
+                <p class="text-[9px] text-pink-400 font-bold mb-1">【B: 感謝ハック】懐に入ってかわす</p>
+                <p id="ans-thanks" class="text-xs text-slate-200 font-mono leading-relaxed bg-slate-900 p-2 rounded"></p>
+            </div>
+            <div>
+                <p class="text-[9px] text-emerald-400 font-bold mb-1">【C: 回避ハック】責任をシステムへ</p>
+                <p id="ans-escape" class="text-xs text-slate-200 font-mono leading-relaxed bg-slate-900 p-2 rounded"></p>
+            </div>
+        </div>
+    </div>
+
+    <button onclick="showScreen('main-screen')" class="w-full bg-slate-700 text-white py-3 mt-2 rounded-xl font-bold text-sm">メインに戻る</button>
+</div>
+
+<script>
+// 辞書データ：カテゴリー、状況、3パターンの回答
+const fullDict = [
+    {
+        cat: 'boss',
+        q: "「もっとよく考えて（忖度しろ）」",
+        logic: "「理想との差分を埋めるため、修正すべきパラメータを1点だけご教授いただけますか？」",
+        thanks: "「深く潜るヒントをありがとうございます！〇〇さんの視点に近づくため、まずここを修正しますね」",
+        escape: "「納期という物理的制約の中で最高解を出すため、今の思考のどこを深掘りすべきかデバッグをお願いします」"
+    },
+    {
+        cat: 'culture',
+        q: "「みんな残っているのに帰るの？」",
+        logic: "「はい！定時で成果を出す背中を見せ、チーム全体の定時退勤という成功体験を牽引中ですので！」",
+        thanks: "「皆様の集中力には脱帽します！私は明朝最高の支援をするため、一足先にリチャージ（休息）に入ります！」",
+        escape: "「時間内にミッション完遂しましたので、次は『健康維持』という次の工程に移行させていただきます！」"
+    },
+    {
+        cat: 'boss',
+        q: "「私の若い頃はもっと…（語り）」",
+        logic: "「貴重な過去ログに感謝します。その精神を現代のツールでどう倍増させるか、検証してみますね」",
+        thanks: "「〇〇さんのようなタフな経験が今の組織を支えてるんですね。その秘訣を1行で言語化すると何ですか？」",
+        escape: "「時代という外部変数が変わった今、その教訓をどう現代OSに移植するか、まずは考えてみます」"
+    }
+];
+
+function filterDict(category) {
+    const container = document.getElementById('dict-buttons');
+    container.innerHTML = '';
+    const filtered = category === 'all' ? fullDict : fullDict.filter(d => d.cat === category);
+    
+    filtered.forEach(item => {
+        const b = document.createElement('button');
+        b.className = "w-full text-left p-3 bg-slate-800 text-slate-300 text-[11px] rounded-lg border border-slate-700 hover:border-indigo-500 transition mb-2";
+        b.innerText = item.q;
+        b.onclick = () => {
+            document.getElementById('hint-box').classList.remove('hidden');
+            document.getElementById('ans-logic').innerText = item.logic;
+            document.getElementById('ans-thanks').innerText = item.thanks;
+            document.getElementById('ans-escape').innerText = item.escape;
+            document.getElementById('hint-box').scrollTo(0,0);
+        };
+        container.appendChild(b);
+    });
+}
+// 起動時に全表示
+filterDict('all');
+</script>
+
 
     <!-- 4. ログアウト：帰還 -->
     <div id="logout-screen" class="screen bg-white p-8 rounded-3xl shadow-2xl w-full max-w-md text-center border-t-8 border-rose-500">
