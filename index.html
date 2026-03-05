@@ -3,17 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rabbit Manager | 自衛と飛翔のバディ</title>
+    <title>Rabbit Manager | メンタル防衛OS</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com');
         body { font-family: 'Noto Sans JP', sans-serif; transition: background 0.5s; overflow: hidden; }
         .pixel-font { font-family: 'DotGothic16', sans-serif; }
-        /* 画面切り替えの完全独立 */
         .screen { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow-y: auto; padding: 1.5rem; }
         .active { display: flex; flex-direction: column; align-items: center; justify-content: start; animation: fadeIn 0.3s ease; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        .glass { bg-white rounded-3xl shadow-2xl border border-white/20; }
+        .reward-pop { animation: pop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        @keyframes pop { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
         .no-scrollbar::-webkit-scrollbar { display: none; }
     </style>
 </head>
@@ -26,17 +26,17 @@
             <h2 class="text-xl font-bold mb-4 text-center">うさぎとの約束</h2>
             <div class="text-[11px] text-slate-600 space-y-4 mb-8 leading-relaxed">
                 <p>1. このアプリは君の「心」を守る盾。発言する時は、君のタイミングを信じてね。</p>
-                <p>2. 旧OS（上司）のバグによる予期せぬ反応に、うさぎは責任を負えません。でも逃げ道は確保するよ！</p>
-                <p>3. 君の本音はスマホの外には出ない。100%安全な秘密基地。さあ、ハックを始めよう。</p>
+                <p>2. 旧OSのバグによる予期せぬ反応に、うさぎは責任を負えません。でも逃げ道は確保するよ！</p>
+                <p>3. ミッションをクリアするたび、君の「市場価値」と「自分らしさ」が守られていくよ。</p>
             </div>
-            <button onclick="showScreen('login-screen')" class="w-full bg-indigo-600 text-white py-4 rounded-xl font-bold shadow-lg hover:bg-indigo-700 transition">約束して入場</button>
+            <button onclick="showScreen('login-screen')" class="w-full bg-indigo-600 text-white py-4 rounded-xl font-bold shadow-lg">約束して入場</button>
         </div>
     </div>
 
     <!-- 1. ログイン -->
     <div id="login-screen" class="screen">
         <div class="bg-white p-8 rounded-3xl shadow-2xl w-full max-w-md my-auto text-center">
-            <h1 class="text-2xl font-bold mb-6 pixel-font text-indigo-600 border-b pb-2">Rabbit Manager 1.4</h1>
+            <h1 class="text-2xl font-bold mb-6 pixel-font text-indigo-600 border-b pb-2">Rabbit Manager 1.5</h1>
             <p class="text-[10px] mb-3 font-bold text-slate-400 uppercase tracking-widest">Field Weather（環境）</p>
             <div class="grid grid-cols-4 gap-2 mb-6" id="weather-grid">
                 <button onclick="setWeather('☀️', '快晴', this)" class="flex flex-col items-center p-2 rounded-xl border border-slate-100 opacity-40 bg-slate-50 transition"><span class="text-2xl">☀️</span><span class="text-[8px] mt-1">快晴</span></button>
@@ -49,7 +49,7 @@
                 <button onclick="setRabbit('🐰', '好調', this)" class="flex flex-col items-center p-2 rounded-xl border border-slate-100 opacity-40 bg-slate-50 transition"><span class="text-2xl">🐰</span><span class="text-[8px] mt-1">絶好調</span></button>
                 <button onclick="setRabbit('💢', '足ダン', this)" class="flex flex-col items-center p-2 rounded-xl border border-slate-100 opacity-40 bg-slate-50 transition"><span class="text-2xl">💢</span><span class="text-[8px] mt-1">足ダン</span></button>
                 <button onclick="setRabbit('💤', '省エネ', this)" class="flex flex-col items-center p-2 rounded-xl border border-slate-100 opacity-40 bg-slate-50 transition"><span class="text-2xl">💤</span><span class="text-[8px] mt-1">省エネ</span></button>
-                <button onclick="setRabbit('🕶️', '隠密', this)" class="flex flex-col items-center p-2 rounded-xl border border-slate-100 opacity-40 bg-slate-50 transition"><span class="text-2xl">🕶️</span><span class="text-[8px] mt-1">ハック</span></button>
+                <button onclick="setRabbit('🕶️', 'ハック', this)" class="flex flex-col items-center p-2 rounded-xl border border-slate-100 opacity-40 bg-slate-50 transition"><span class="text-2xl">🕶️</span><span class="text-[8px] mt-1">ハック</span></button>
             </div>
             <button onclick="goMain()" id="entry-btn" class="w-full bg-slate-300 text-white py-4 rounded-xl font-bold cursor-not-allowed" disabled>選択してください</button>
         </div>
@@ -58,24 +58,33 @@
     <!-- 2. 本体 -->
     <div id="main-screen" class="screen">
         <div class="bg-white p-6 rounded-3xl shadow-2xl w-full max-w-md my-auto">
-            <div class="flex justify-between items-center mb-6 bg-slate-50 p-4 rounded-2xl">
+            <div class="flex justify-between items-center mb-4 bg-slate-50 p-4 rounded-2xl">
                 <div id="status-rabbit-display" class="text-5xl">🐰</div>
                 <div class="text-right">
                     <div class="flex items-center justify-end text-xl">
                         <span id="status-weather-display">☀️</span>
                         <span id="status-weather-text" class="text-[10px] ml-1 font-bold text-slate-500">快晴</span>
                     </div>
-                    <div class="text-[10px] font-mono text-indigo-400 uppercase">System Ready</div>
+                    <div class="text-[10px] font-mono text-indigo-400 uppercase">Mental Guarding...</div>
                 </div>
             </div>
-            <div class="bg-indigo-50 p-4 rounded-2xl mb-6 border-l-4 border-indigo-500">
+            <div id="advice-box" class="bg-indigo-50 p-4 rounded-2xl mb-6 border-l-4 border-indigo-500">
                 <p id="rabbit-advice" class="text-sm font-bold text-indigo-800 italic leading-relaxed"></p>
             </div>
-            <div class="space-y-3 mb-8">
+            
+            <div class="space-y-3 mb-6">
                 <h3 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Self-Defense Missions</h3>
-                <label class="flex items-center p-3 bg-slate-50 rounded-xl"><input type="checkbox" class="w-4 h-4 mr-3 accent-indigo-500"><span class="text-xs">評価をノイズとしてミュート</span></label>
-                <label class="flex items-center p-3 bg-slate-50 rounded-xl"><input type="checkbox" class="w-4 h-4 mr-3 accent-indigo-500"><span class="text-xs">定時後の自分に報酬を予約</span></label>
+                <div id="mission-list" class="space-y-2">
+                    <!-- JSでミッションが生成される -->
+                </div>
             </div>
+
+            <!-- 報酬表示エリア -->
+            <div id="reward-area" class="hidden mb-6 p-3 bg-yellow-50 border border-yellow-200 rounded-xl text-center reward-pop">
+                <p class="text-lg">👑✨</p>
+                <p class="text-[10px] font-bold text-yellow-700">報酬：心の平穏＋100 / 市場価値を守り抜いた！</p>
+            </div>
+
             <div class="grid grid-cols-2 gap-3">
                 <button onclick="goDict()" class="bg-slate-800 text-white py-4 rounded-xl text-sm font-bold shadow-lg">反撃の辞書</button>
                 <button onclick="goLogout()" class="bg-rose-500 text-white py-4 rounded-xl text-sm font-bold shadow-lg">緊急脱出</button>
@@ -83,25 +92,25 @@
         </div>
     </div>
 
-    <!-- 3. 辞書：カテゴリー選択 -->
+    <!-- 3. 辞書画面 (省略せず実装) -->
     <div id="dict-screen" class="screen">
         <div class="bg-slate-900 p-6 rounded-3xl shadow-2xl w-full max-w-md my-auto border border-slate-700 max-h-[85vh] flex flex-col">
             <div class="flex justify-between items-center mb-4">
                 <h2 class="text-green-400 pixel-font text-sm">📁 OS_HACK_DICT</h2>
                 <button onclick="showScreen('main-screen')" class="text-slate-400 text-xs px-2 py-1 bg-slate-800 rounded">CLOSE ×</button>
             </div>
-            <div class="flex gap-2 mb-4 overflow-x-auto pb-2 no-scrollbar">
+            <div class="flex gap-2 mb-4 overflow-x-auto pb-2 no-scrollbar" id="cat-tabs">
                 <button onclick="filterDict('all')" class="whitespace-nowrap px-3 py-1 bg-slate-700 text-white text-[9px] rounded-full">ALL</button>
                 <button onclick="filterDict('boss')" class="whitespace-nowrap px-3 py-1 bg-indigo-900 text-white text-[9px] rounded-full">上司</button>
                 <button onclick="filterDict('culture')" class="whitespace-nowrap px-3 py-1 bg-rose-900 text-white text-[9px] rounded-full">風習</button>
                 <button onclick="filterDict('mental')" class="whitespace-nowrap px-3 py-1 bg-emerald-900 text-white text-[9px] rounded-full">自衛</button>
             </div>
             <div class="flex-1 overflow-y-auto space-y-2 mb-4 pr-1 no-scrollbar" id="dict-buttons"></div>
-            <div id="hint-box" class="hidden bg-slate-800 p-4 rounded-xl border border-green-500 overflow-y-auto shadow-inner">
+            <div id="hint-box" class="hidden bg-slate-800 p-4 rounded-xl border border-green-500 shadow-inner">
                 <div class="space-y-4">
-                    <div><p class="text-[8px] text-blue-400 font-bold mb-1 uppercase">【A: 論理】</p><p id="ans-logic" class="text-[10px] text-slate-200 font-mono bg-slate-950 p-2 rounded"></p></div>
-                    <div><p class="text-[8px] text-pink-400 font-bold mb-1 uppercase">【B: 感謝】</p><p id="ans-thanks" class="text-[10px] text-slate-200 font-mono bg-slate-950 p-2 rounded"></p></div>
-                    <div><p class="text-[8px] text-emerald-400 font-bold mb-1 uppercase">【C: 逃力】</p><p id="ans-escape" class="text-[10px] text-slate-200 font-mono bg-slate-950 p-2 rounded"></p></div>
+                    <div><p class="text-[8px] text-blue-400 font-bold mb-1">【A: 論理】</p><p id="ans-logic" class="text-[10px] text-slate-200 font-mono bg-slate-950 p-2 rounded"></p></div>
+                    <div><p class="text-[8px] text-pink-400 font-bold mb-1">【B: 感謝】</p><p id="ans-thanks" class="text-[10px] text-slate-200 font-mono bg-slate-950 p-2 rounded"></p></div>
+                    <div><p class="text-[8px] text-emerald-400 font-bold mb-1">【C: 逃力】</p><p id="ans-escape" class="text-[10px] text-slate-200 font-mono bg-slate-950 p-2 rounded"></p></div>
                 </div>
             </div>
         </div>
@@ -119,13 +128,23 @@
 
     <script>
         let weather = '', weatherLabel = '', rabbit = '', rabbitLabel = '';
+        
+        // ミッションマトリクス
+        const missionMap = {
+            '☀️': ["評価を『環境音』として聞き流す", "1分早くPCを閉じる準備をする"],
+            '☁️': ["思考と事実を切り分ける", "定時後のご褒美を具体的に決める"],
+            '⚡️': ["上司の視界からフェードアウトする", "イヤホンや物理距離で自分を守る"],
+            '❄️': ["変化を求めず、今日は『無』になる", "自分を1回だけ心の中で褒める"],
+            '🐰': ["自分の得意なハックを1つ試す", "部下や後輩に『逃げ道』を教える"],
+            '💢': ["怒りを『論理ハック』の燃料に変える", "机を片付けて『心の境界線』を作る"],
+            '💤': ["全ての返答を『承知』の2文字に固定", "昼休みを1分だけ延長して自分を労う"],
+            '🕶️': ["社内政治を『ゲーム』として客観視する", "誰にも気づかれずミッションを完遂"]
+        };
+
         const fullDict = [
             { cat:'boss', q:"「もっとよく考えて」", logic:"「理想との差分を埋めるため、修正すべき変数を1点だけご教授いただけますか？」", thanks:"「ヒント感謝です！〇〇さんの視点に近づくため、ここを磨き直しますね」", escape:"「納期という物理制約の中で最高解を出すため、今の私の思考へのデバッグをお願いします」" },
-            { cat:'culture', q:"「早く帰れるのは周りのおかげだよ」", logic:"「仰る通りです！皆様のサポートを無駄にしないよう、最高効率で完遂させていただきました！」", thanks:"「感謝しています！明朝一番にリフレッシュした状態でまた貢献させてください！」", escape:"「チームの協力体制に感謝しつつ、本日のタスクログを全てクローズしたので失礼します」" },
-            { cat:'boss', q:"「やる気あるの？（精神論）」", logic:"「あります！なので、燃え尽きを避けるために徹底した自己リソース管理を遂行中です」", thanks:"「お気遣い感謝です！成果への最短ルートを通るため、今は集中モードに入っております」", escape:"「やる気を効率に変換した結果、本日の全ミッションをクリアしました。報告書をどうぞ」" },
-            { cat:'culture', q:"「若い頃はもっと苦労した」", logic:"「過去のハードワークが今の基盤なんですね。それを現代OSでどう自動化するか挑戦中です」", thanks:"「タフな時代を生き抜いた知見ですね。その中で一番『今も役立つ教訓』は何ですか？」", escape:"「教訓ありがとうございます。時代という変数が変わった今、どう移植するか考えてみます」" },
-            { cat:'mental', q:"「評価が気になって帰れない」", logic:"「定時退勤は『自己管理能力』の証明。長期的な投資価値（健康）を守る判断を優先せよ」", thanks:"「周囲に気遣えるのは君の優しさ。でも、うさぎは君が早く帰って笑う顔が見たいな」", escape:"「会社は24時間動いても、君のOSは休息が必要。今すぐシャットダウンを実行して」" },
-            { cat:'boss', q:"「（休日に）急ぎじゃないけど連絡」", logic:"「緊急時以外はデタッチ（切断）します。週明けに最高のアウトプットで同期しますね」", thanks:"「ご連絡ありがとうございます。月曜の朝一に真っ先に対応ログを確認いたしますね！」", escape:"「（返信せず月曜に）土日はオフライン環境におりました。早速対応いたします！」" }
+            { cat:'culture', q:"「早く帰れるのは周りのおかげだよ」", logic:"「仰る通りです！皆様のサポートを無駄にしないよう、最高効率で完遂させていただきました！」", thanks:"「感謝しています！明朝一番にリフレッシュした状態でまた貢献させてください！」", escape:"「チームの協力体制に感謝しつつ、タスクログを全てクローズしたので失礼します」" },
+            { cat:'boss', q:"「やる気あるの？」", logic:"「あります！なので、燃え尽きを避けるために徹底したリソース管理を遂行中です」", thanks:"「お気遣い感謝です！成果への最短ルートを通るため、今は集中モードに入っております」", escape:"「やる気を効率に変換した結果、全ミッションをクリアしました。報告書をどうぞ」" }
         ];
 
         function showScreen(id) {
@@ -159,11 +178,28 @@
             document.getElementById('status-weather-display').innerText = weather;
             document.getElementById('status-weather-text').innerText = weatherLabel;
             document.getElementById('status-rabbit-display').innerText = rabbit;
-            let adv = "順調だね。自分を死守しよう。";
-            if(weather==='⚡️') adv = "外は嵐。ノイズは聞き流して逃げる準備を。";
-            if(rabbit==='💤') adv = "省エネ。最低限のパッチだけで乗り切ろう。";
-            document.getElementById('rabbit-advice').innerText = adv;
+            
+            // ミッション生成
+            const list = document.getElementById('mission-list');
+            list.innerHTML = '';
+            const missions = [...missionMap[weather], ...missionMap[rabbit]];
+            missions.forEach(m => {
+                const label = document.createElement('label');
+                label.className = "flex items-center p-3 bg-white rounded-xl shadow-sm border border-slate-100 cursor-pointer hover:bg-slate-50 transition";
+                label.innerHTML = `<input type="checkbox" class="w-4 h-4 mr-3 accent-indigo-500" onchange="completeMission(this)"> <span class="text-[11px] font-bold text-slate-600">${m}</span>`;
+                list.appendChild(label);
+            });
+
+            document.getElementById('rabbit-advice').innerText = (weather === '⚡️' || rabbit === '💢') ? "外は危険だね。うさぎと一緒に『心のバリア』を全開にして！" : "今日はいい感じ。君の資産（時間）を守り抜こう。";
             showScreen('main-screen');
+        }
+
+        function completeMission(el) {
+            if(el.checked) {
+                const area = document.getElementById('reward-area');
+                area.classList.remove('hidden');
+                setTimeout(() => area.classList.add('hidden'), 3000);
+            }
         }
 
         function filterDict(category) {
